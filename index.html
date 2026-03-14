@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Customer Complaint</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f0e0c;
+    font-family: 'DM Sans', sans-serif;
+    padding: 2rem;
+  }
+
+  .card {
+    background: #1a1814;
+    border: 1px solid #2e2b26;
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 480px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(212,166,90,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(212,166,90,0.12);
+    color: #d4a65a;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    border: 1px solid rgba(212,166,90,0.25);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: #f0ece4;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+    color: #6b6660;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+
+  .field {
+    margin-bottom: 1.2rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a8278;
+    margin-bottom: 0.45rem;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: #111009;
+    border: 1px solid #2e2b26;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: #f0ece4;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.925rem;
+    font-weight: 300;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #3d3a35;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #d4a65a;
+    box-shadow: 0 0 0 3px rgba(212,166,90,0.1);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23d4a65a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
+  select option {
+    background: #1a1814;
+    color: #f0ece4;
+  }
+
+  textarea {
+    resize: none;
+    height: 110px;
+    line-height: 1.6;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #d4a65a, #b8883e);
+    color: #0f0e0c;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+
+  button:hover { opacity: 0.9; transform: translateY(-1px); }
+  button:active { transform: translateY(0); }
+
+  .divider {
+    height: 1px;
+    background: #2e2b26;
+    margin: 1.8rem 0;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="badge">Support</span>
+  <h2>Submit a Complaint</h2>
+  <p class="subtitle">We'll review your issue and respond within 24 hours.</p>
+
+  <form action="https://n8nio-n8n-0y64.onrender.com/webhook/complaint" method="POST">
+    <div class="row">
+      <div class="field">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="jane@email.com" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="issue">Issue Type</label>
+      <select id="issue" name="issue">
+        <option>Delivery Issue</option>
+        <option>Payment Issue</option>
+        <option>Product Issue</option>
+      </select>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field">
+      <label for="message">Describe your issue</label>
+      <textarea id="message" name="message" placeholder="Tell us what happened in detail…"></textarea>
+    </div>
+
+    <button type="submit">Submit Complaint →</button>
+  </form>
+</div>
+</body>
+</html>
