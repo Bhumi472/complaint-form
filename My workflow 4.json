@@ -1,0 +1,224 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "complaint",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "32b4e0fa-d71a-4599-8c35-6ed04dcec568",
+      "name": "Webhook",
+      "webhookId": "692d0766-1941-403a-a561-db05267d8a60"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a customer support AI.\n\nAnalyze the complaint message and generate a polite response.\n\nComplaint:\n{{$json.message}}",
+        "options": {
+          "systemMessage": "You are a helpful assistant"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e6c60a8d-6f9b-4a86-b830-55b9b88144bf",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        128
+      ],
+      "id": "1d346da3-be77-407e-847c-2bda78c5cd90",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "IIG9MKbZHHPKwPhi",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1s9P32LQg5KHCjAdldrSQdjxnnTwOyC5XHblIeAimFTU",
+          "mode": "list",
+          "cachedResultName": "complaints sheets",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1s9P32LQg5KHCjAdldrSQdjxnnTwOyC5XHblIeAimFTU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1s9P32LQg5KHCjAdldrSQdjxnnTwOyC5XHblIeAimFTU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $('Webhook').item.json.body.name }}",
+            "Email": "={{ $('Webhook').item.json.body.email }}",
+            "Issue": "={{ $('Webhook').item.json.body.issue }}",
+            "Message": "={{ $('Webhook').item.json.body.message }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Issue",
+              "displayName": "Issue",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        0
+      ],
+      "id": "63d874da-925d-4607-a0d1-a8cbb27278cc",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "IFx7aPfMbE3H57P3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.email }}",
+        "subject": "Your complaint has been received",
+        "message": "=<h2>Complaint Received</h2>\n<p>Hello <b>{{ $('Webhook').item.json.body.name }}</b>,</p>\n<p>Thank you for contacting us. Your complaint has been received.</p>\n<p><b>Issue Type:</b> {{ $('Webhook').item.json.body.issue }}</p>\n<p><b>Your Message:</b></p>\n<p>{{ $('Webhook').item.json.body.message }}</p>\n<p><b>AI Suggested Response:</b></p>\n<p>{{ $('AI Agent').item.json.output }}</p>\n<p>Our support team will contact you soon.</p>\n<p>Thank you,<br>\nCustomer Support Team</p>\n```\n\n---\n\n## What Changed:\n\n| Old (Wrong) ❌ | New (Correct) ✅ |\n|---|---|\n| `{{$json.name}}` | `{{ $('Webhook').item.json.body.name }}` |\n| `{{$json.issue}}` | `{{ $('Webhook').item.json.body.issue }}` |\n| `{{$json.message}}` | `{{ $('Webhook').item.json.body.message }}` |\n| `{{$json.output}}` | `{{ $('AI Agent').item.json.output }}` |\n\n---\n\n## Also fix the **\"To\" field:**\n```\n{{ $('Webhook').item.json.body.email }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "2b3ff99d-591b-4fb2-a56b-d9c00187fe75",
+      "name": "Send a message",
+      "webhookId": "b0d15c94-2012-4fea-8f36-bf03078309c7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GjbtTKABebC0rFsW",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "811f9624-2ffc-461b-9b85-82f90105ac2e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4a51e64979b53328ab9190e11318ba5b1e3d234e38f6c2e7e9c9841106ed4700"
+  },
+  "id": "WhbSQGRs2MrkyVj0",
+  "tags": []
+}
